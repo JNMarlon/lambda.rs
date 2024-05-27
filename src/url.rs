@@ -8,4 +8,8 @@ pub fn digest(url:&str)-> Vec<u8>{
     hasher.finalize().to_vec()
 }
 
-
+/**주어진 바이트 벡처의 앞부분 일부를 취해서 crockford's base32로 인코딩*/
+pub fn truncate_base32(digest:&Vec<u8>, truncate_len:usize)->String{
+    let truncated: &[u8] = &digest.as_slice()[...truncate_len];
+    base32::encode(base32::Alphabet::Crockford,truncated)
+}
