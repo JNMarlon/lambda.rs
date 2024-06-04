@@ -14,6 +14,18 @@ pub fn truncate_base32(digest:&Vec<u8>, truncate_len:usize) ->String{
 }
 
 
+/**
+ * Crockford의 base32 인코딩에서는 사람이 보기에 혼동하기 쉬운 글자들을 하나로 인식한다
+ * 예를 들어, 인코딩된 문자열에서 1을 i나 l 등으로 인식해서 잘못 입력했다고 하더라도,
+ * 디코딩시에 정상적으로 1로 처리해주는 것. 사람이 잘못 읽어서 기재한 인코딩 문자열을 디코딩했다가
+ * 다시 인코딩하면, 표준적인 base32 문자열을 만들수 있다
+ **/
+pub fn base32_normalize(encoded:&str)->Option<String>{
+    let decoded = base32::decode(base32::Alphabet::Crockford,encoded)?;
+    Some(base32::encode(base32::Alphabet::Crockford,&decoded))
+}
+
+
 
 
 

@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::url::digest;
+    use crate::url::{base32_normalize, digest};
     use crate::url::truncate_base32;
     #[test]
     fn test_digest() {
@@ -26,4 +26,17 @@ mod tests {
         assert_eq!(BASE_32_EXAMPLE,base32);
 
     }
+
+    #[test]
+    fn test_base32_normalize(){
+        const BASE1:&str = "CGFO";
+        const TARGET1:&str = "CGF0";
+
+        assert_eq!(TARGET1,base32_normalize(BASE1).unwrap());
+        const BASE2:&str = "1ilIA";
+        const TARGET2:&str = "1111A";
+
+        assert_eq!(TARGET2,base32_normalize(BASE2).unwrap())
+    }
+
 }
