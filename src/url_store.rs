@@ -28,11 +28,3 @@ impl MemoryUrlStore{
     }
 }
 
-impl MemoryUrlStore{
-
-    fn new()-> MemoryUrlStore{
-        let db = HashMap::new();
-        let digest = HashMap::new();
-        MemoryUrlStore{db, digests}
-    }
-}
