@@ -1,4 +1,6 @@
+use std::collections::HashMap;
 use async_trait::async_trait;
+
 
 #[async_trait]
 pub trait UrlStore {
@@ -10,4 +12,27 @@ pub trait UrlStore {
 
     /*저장하기*/
     async fn save(&mut self, short_url: &str, digest: &Vec<u8>, long_url: &str);
+}
+
+
+pub struct MemoryUrlStore{
+    db:HashMap<String, (String, String)>,
+    digests:HashMap<String, String>,
+}
+
+impl MemoryUrlStore{
+    fn new()-> MemoryUrlStore{
+        let db = HashMap::new();
+        let digests = HashMap::new();
+        MemoryUrlStore{db,digests}
+    }
+}
+
+impl MemoryUrlStore{
+
+    fn new()-> MemoryUrlStore{
+        let db = HashMap::new();
+        let digest = HashMap::new();
+        MemoryUrlStore{db, digests}
+    }
 }
