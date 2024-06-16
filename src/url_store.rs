@@ -28,3 +28,20 @@ impl MemoryUrlStore{
     }
 }
 
+#[async_trait]
+impl UrlStore for MemoryUrlStore{
+    async fn find_by_short_url(&self, short_url: &str) -> Option<(String, String)> {
+        self.db.get(short_url).cloned()
+    }
+
+    async fn find_by_digest(&self, digest: &Vec<u8>) -> Option<String> {
+        self.digests.get(&hex::encode(digest)).cloned()
+    }
+
+    async fn save(&mut self, short_url: &str, digest: &Vec<u8>, long_url: &str) {
+        let digest_hex = hex::encode(digest);
+        self.db.insert(String::from(short_url), (digest_hex.clone(), String::from(long_url)));
+        self.digests.insert(digest_hex,String::from(short_url));
+    }
+}
+
