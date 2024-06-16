@@ -45,3 +45,23 @@ impl UrlStore for MemoryUrlStore{
     }
 }
 
+use aws_config::meta::region::RegionProviderChain;
+use aws_sdk_dynamodb::types::AttributeValue::{N, S};
+use aws_sdk_dynamodb::Client;
+
+
+pub struct DynamoUrlStore{
+    client: Client
+}
+
+impl DynamoUrlStore{
+    pub async fn new()->DynamoUrlStore{
+        let regional_provider = RegionProviderChain::default_provider().or_else("ap-northeast-2");
+        let config = aws_config::from_env().region(regional_provider).load().await;
+        let client = Client::new(&config);
+
+        DynamoUrlStore{
+            client
+        }
+    }
+}
