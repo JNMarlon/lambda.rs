@@ -48,6 +48,7 @@ impl UrlStore for MemoryUrlStore{
 use aws_config::meta::region::RegionProviderChain;
 use aws_sdk_dynamodb::types::AttributeValue::{N, S};
 use aws_sdk_dynamodb::Client;
+use crate::url;
 
 
 pub struct DynamoUrlStore{
@@ -64,4 +65,23 @@ impl DynamoUrlStore{
             client
         }
     }
+}
+
+
+pub async fn shorten(store: &mut impl UrlStore, long_url:&str)->String{
+    let long_url = long_url.trim();
+    let digest = url::digest(long_url);
+    let digest_hex = hex::encode(&digest);
+    for t in 2..digest.len() {
+        let short_url = url::truncate_base32(&digest, t);
+        match store.find_by_short(&short_url).await{
+            Some((_,hex)) if hex == digest_hex => return short_url,
+            _ => {
+                let _ = store.save(&short_url,&digest,long_url).await;
+                return short_url;
+            }
+        }
+    }
+    panic!("endless duplication")
+
 }
